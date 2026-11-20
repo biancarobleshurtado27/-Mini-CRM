@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Panel del Mini-CRM de admisiones FWD" />
+    <title>FWD | Mini-CRM de admisiones</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Inicio del panel FWD"><span>FWD</span> admisiones</a>
+      <div class="live-status"><i></i> Sistema activo</div>
+    </header>
+
+    <main id="inicio">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">PANEL DE CONTROL · GEN 1-2027</p>
+          <h1>Todo el embudo,<br /><em>bajo control.</em></h1>
+          <p class="hero-copy">Gestioná prospectos, detectá fugas y priorizá seguimientos desde un mismo lugar.</p>
+        </div>
+        <button class="primary-button" id="refreshButton">Actualizar datos</button>
+      </section>
+
+      <section class="metrics" aria-label="Resumen del embudo">
+        <article class="metric-card accent"><p>Prospectos totales</p><strong id="totalProspectos">—</strong><span>en el embudo actual</span></article>
+        <article class="metric-card"><p>Etapas activas</p><strong id="totalEtapas">—</strong><span>recorrido completo</span></article>
+        <article class="metric-card"><p>Requieren atención</p><strong id="totalAtencion">—</strong><span>sin avance en 7 días</span></article>
+      </section>
+
+      <section class="panel flows-panel" aria-labelledby="flowsTitle">
+        <div class="panel-heading"><div><p class="eyebrow">FLUJOS OPERATIVOS</p><h2 id="flowsTitle">Del ingreso a la decisión</h2></div><span class="pill">2 flujos activos</span></div>
+        <div class="flow-tabs" role="tablist" aria-label="Flujos disponibles">
+          <button class="flow-tab active" data-flow="admisiones" role="tab" aria-selected="true">Admisiones</button>
+          <button class="flow-tab" data-flow="mercadeo" role="tab" aria-selected="false">Mercadeo</button>
+        </div>
+        <div id="flowAdmisiones" class="flow-content" role="tabpanel">
+          <p class="flow-description">Cada prospecto entra al embudo, recibe seguimiento y avanza con un historial de cambios.</p>
+          <div class="flow-track">
+            <a href="#prospectoForm" class="flow-step"><b>1</b><span>Registrar<br /><small>Nuevo prospecto</small></span></a><i></i>
+            <a href="#attentionList" class="flow-step"><b>2</b><span>Priorizar<br /><small>Atención hoy</small></span></a><i></i>
+            <a href="#etapaForm" class="flow-step"><b>3</b><span>Mover etapa<br /><small>Historial guardado</small></span></a><i></i>
+            <a href="#funnel" class="flow-step"><b>4</b><span>Medir fuga<br /><small>Decisión basada en datos</small></span></a>
+          </div>
+        </div>
+        <div id="flowMercadeo" class="flow-content hidden" role="tabpanel">
+          <p class="flow-description">El contenido se crea desde un objetivo, pasa por aprobación humana y queda listo para publicar.</p>
+          <div class="flow-track">
+            <a href="#campanaForm" class="flow-step"><b>1</b><span>Definir objetivo<br /><small>Sede y presupuesto</small></span></a><i></i>
+            <a href="#campanaForm" class="flow-step"><b>2</b><span>Generar piezas<br /><small>3 textos para redes</small></span></a><i></i>
+            <a href="#campaignResult" class="flow-step"><b>3</b><span>Aprobar<br /><small>Humano en el circuito</small></span></a><i></i>
+            <a href="#campaignResult" class="flow-step"><b>4</b><span>Publicar<br /><small>Listo para ejecutar</small></span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel funnel-panel">
+          <div class="panel-heading"><div><p class="eyebrow">EMBUDO</p><h2>Conversión por etapa</h2></div><span class="pill">Metas activas</span></div>
+          <div id="funnel" class="funnel" aria-live="polite"></div>
+        </article>
+
+        <aside class="panel add-panel">
+          <p class="eyebrow">NUEVO INGRESO</p>
+          <h2>Registrar prospecto</h2>
+          <form id="prospectoForm">
+            <label>Alias<input name="alias" placeholder="Ej. Prospecto-41" required maxlength="60" /></label>
+            <label>Sede<select name="sede" required><option value="">Elegí una sede</option><option>Desamparados</option><option>Puntarenas</option></select></label>
+            <label>Canal<select name="canal"><option>Landing</option><option>Redes sociales</option><option>Referido</option><option>Evento</option></select></label>
+            <button class="primary-button full" type="submit">Registrar prospecto</button>
+          </form>
+          <p id="formMessage" class="form-message" role="status"></p>
+        </aside>
+      </section>
+
+      <section class="content-grid lower-grid">
+        <article class="panel attention-panel">
+          <div class="panel-heading"><div><p class="eyebrow">PRIORIDAD HOY</p><h2>Seguimientos pendientes</h2></div><button class="text-button" id="showAllButton">Ver todos</button></div>
+          <div id="attentionList" class="attention-list" aria-live="polite"></div>
+        </article>
+
+        <aside class="panel quick-panel">
+          <p class="eyebrow">ACTUALIZAR ETAPA</p>
+          <h2>Mover prospecto</h2>
+          <form id="etapaForm">
+            <label>ID del prospecto<input name="id" type="number" min="1" placeholder="Ej. 1" required /></label>
+            <label>Nueva etapa<select name="etapa" id="etapaSelect" required></select></label>
+            <button class="secondary-button full" type="submit">Guardar cambio</button>
+          </form>
+          <p id="etapaMessage" class="form-message" role="status"></p>
+        </aside>
+      </section>
+
+      <section class="content-grid lower-grid">
+        <article class="panel explorer-panel">
+          <div class="panel-heading"><div><p class="eyebrow">BASE DE PROSPECTOS</p><h2>Explorar y filtrar</h2></div><span id="resultsCount" class="pill">0 resultados</span></div>
+          <form id="filtersForm" class="filters">
+            <input name="buscar" placeholder="Buscar por alias o canal" />
+            <select name="etapa" id="filterEtapa"><option value="">Todas las etapas</option></select>
+            <select name="sede"><option value="">Todas las sedes</option><option>Desamparados</option><option>Puntarenas</option></select>
+            <button class="secondary-button" type="submit">Aplicar filtros</button>
+          </form>
+          <div id="prospectsList" class="prospects-list" aria-live="polite"></div>
+        </article>
+
+        <aside class="panel campaign-panel">
+          <p class="eyebrow">BONUS · MERCADEO</p>
+          <h2>Crear campaña</h2>
+          <form id="campanaForm">
+            <label>Objetivo<input name="objetivo" placeholder="Ej. Atraer inscritos al Campus Day" required minlength="8" /></label>
+            <label>Sede<select name="sede"><option>Desamparados</option><option>Puntarenas</option><option>Ambas sedes</option></select></label>
+            <label>Presupuesto<select name="presupuesto"><option>$1,000</option><option>$2,500</option><option>$5,000</option></select></label>
+            <button class="primary-button full" type="submit">Generar 3 piezas</button>
+          </form>
+          <p id="campanaMessage" class="form-message" role="status"></p>
+          <div id="campaignResult" class="campaign-result"></div>
+        </aside>
+      </section>
+    </main>
+    <footer>Mini-CRM de admisiones · Datos ficticios para demostración académica</footer>
+    <script src="app.js"></script>
+  </body>
+</html>
